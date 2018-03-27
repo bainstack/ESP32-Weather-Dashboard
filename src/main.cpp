@@ -68,9 +68,6 @@ const char *forecast_url = "https://api.weatherbit.io/v2.0/forecast/daily?city_i
 // Konstanten fuer horizontale Rasterhoehe des Forecasts deklarieren
 const int yForecastSymbol = 63;
 
-// Counter für die Loops
-int count = 0;
-
 // genutzte Ports definieren
 GxIO_Class io(SPI, SS, 17, 16); //SPI,SS,DC,RST
 GxEPD_Class display(io, 16, 4); //io,RST,BUSY
@@ -342,7 +339,6 @@ void loop()
 
     // aktuelles Wetter zeichnen
     drawCurrent(current_url);
-    count += 1;
 
     // Sonnenaufgang: Symbol zeichnen
     display.drawBitmap(0, 0, gImage_sunrise, 24, 24, GxEPD_BLACK);
@@ -365,25 +361,20 @@ void loop()
     // Display updaten
     display.updateWindow(0, 0, GxEPD_HEIGHT, 58, true);
 
-    if (count % 12 == 0)
-    {
-        // gesamtes Display mit leerem rechteck füllen
-        display.fillRect(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
+    // gesamtes Display mit leerem rechteck füllen
+    display.fillRect(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
 
-        // Strukturen fuer die naechsten 5 Tage erstellen und befuellen, fuer jeden Tag Symbol zeichnen, Temperatur und Datum schreiben
-        drawForecast(forecast_url);
+    // Strukturen fuer die naechsten 5 Tage erstellen und befuellen, fuer jeden Tag Symbol zeichnen, Temperatur und Datum schreiben
+    drawForecast(forecast_url);
 
-        // vertikales Raster zeichnen
-        display.drawLine(59, 60, 59, GxEPD_WIDTH, GxEPD_BLACK);
-        display.drawLine(118, 60, 118, GxEPD_WIDTH, GxEPD_BLACK);
-        display.drawLine(177, 60, 177, GxEPD_WIDTH, GxEPD_BLACK);
-        display.drawLine(236, 60, 236, GxEPD_WIDTH, GxEPD_BLACK);
+    // vertikales Raster zeichnen
+    display.drawLine(59, 60, 59, GxEPD_WIDTH, GxEPD_BLACK);
+    display.drawLine(118, 60, 118, GxEPD_WIDTH, GxEPD_BLACK);
+    display.drawLine(177, 60, 177, GxEPD_WIDTH, GxEPD_BLACK);
+    display.drawLine(236, 60, 236, GxEPD_WIDTH, GxEPD_BLACK);
 
-        // Display updaten
-        display.updateWindow(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
-
-        count = 0;
-    }
+    // Display updaten
+    display.updateWindow(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
 
     delay(1800000);
 }
