@@ -79,11 +79,10 @@ void setup()
 
     WiFi.begin(ssid, password);
 
-    display.init();         // e-Ink Display initialisieren
-    display.setRotation(1); // Display um 90° drehen
-    display.fillRect(0, 0, GxEPD_HEIGHT, GxEPD_WIDTH, GxEPD_WHITE);
-    display.drawLine(0, 59, 296, 59, GxEPD_BLACK); // Mittlere horizontale Linie zeichnen
-    display.update();                              // Display aktualisieren
+    display.init();                    // e-Ink Display initialisieren
+    display.setRotation(1);            // Display um 90° drehen
+    display.setTextColor(GxEPD_BLACK); // Schriftfarbe Schwarz
+    display.setTextSize(1);            // Schriftgroesse 1
 
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -94,6 +93,7 @@ void setup()
 
 String calculateTime(long zeit, bool param)
 {
+    zeit += 7200;
     char s[30];
     size_t i;
     struct tm tim;
@@ -329,13 +329,9 @@ void drawForecast(String url)
 void loop()
 {
     // Bereich von current & outlook mit leerem rechteck füllen
-    display.fillRect(0, 0, GxEPD_HEIGHT, 58, GxEPD_WHITE);
+    display.fillRect(0, 0, GxEPD_HEIGHT, GxEPD_WIDTH, GxEPD_WHITE);
 
     WiFiClient client;
-
-    display.setRotation(1);            // Display um 90° drehen
-    display.setTextColor(GxEPD_BLACK); // Schriftfarbe Schwarz
-    display.setTextSize(1);            // Schriftgroesse 1
 
     // aktuelles Wetter zeichnen
     drawCurrent(current_url);
@@ -358,11 +354,7 @@ void loop()
     display.drawLine(177, 32, 236, 32, GxEPD_BLACK);
     display.drawLine(177, 33, 177, 58, GxEPD_BLACK);
 
-    // Display updaten
-    display.updateWindow(0, 0, GxEPD_HEIGHT, 58, true);
-
-    // gesamtes Display mit leerem rechteck füllen
-    display.fillRect(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
+    display.drawLine(0, 59, 296, 59, GxEPD_BLACK); // Mittlere horizontale Linie zeichnen
 
     // Strukturen fuer die naechsten 5 Tage erstellen und befuellen, fuer jeden Tag Symbol zeichnen, Temperatur und Datum schreiben
     drawForecast(forecast_url);
@@ -374,7 +366,7 @@ void loop()
     display.drawLine(236, 60, 236, GxEPD_WIDTH, GxEPD_BLACK);
 
     // Display updaten
-    display.updateWindow(0, 60, GxEPD_HEIGHT, GxEPD_WIDTH, true);
+    display.update();
 
-    delay(1800000);
+    delay(900000);
 }
